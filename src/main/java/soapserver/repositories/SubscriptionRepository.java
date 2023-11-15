@@ -1,15 +1,16 @@
-package kinokuniya.repository;
+package soapserver.repositories;
 
-import kinokuniya.model.*;
-import kinokuniya.enums.Stat;
-import kinokuniya.util.HibernateUtil;
+import soapserver.models.*;
+import soapserver.enums.Stat;
+import soapserver.utils.HibernateUtil;
 
 import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -104,56 +105,47 @@ public class SubscriptionRepository {
         } 
     }
 
-    public DataPagination getAllReqSubscribe(int page, int rows) {
-        try {
-            DataPagination data = new DataPagination();
+    public List<Subscription> getAllReqSubscribe() {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        Session session = sessionFactory.getCurrentSession();
 
-            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-            Session session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
 
-            session.beginTransaction();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
+        Root<Subscription> root = criteria.from(Subscription.class);
+        Predicate predicate = builder.equal(root.get("status"), Stat.PENDING);
+        criteria.select(root).where(predicate);
+        TypedQuery<Subscription> query = session.createQuery(criteria);
 
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
-            Root<Subscription> root = criteria.from(Subscription.class);
-            Predicate predicate = builder.equal(root.get("status"), Stat.PENDING);
-            criteria.select(root).where(predicate);
-            TypedQuery<Subscription> query = session.createQuery(criteria);
+        List<Subscription> subscriptions = query.getResultList();
 
-            List<Subscription> subscriptions = query.setFirstResult((page - 1) * rows).setMaxResults(rows).getResultList();
-            data.setData(subscriptions);
+        session.getTransaction().commit();
 
-            int pageCount = this.getPageCount(rows);
-            data.setPageCount(pageCount);
-
-            session.getTransaction().commit();
-
-            return data;
-
-        } catch (Exception e) {
-            return null;
-        }
+        return subscriptions;
     }
 
-    public int getPageCount(int rows) {
-        try {
-            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-            Session session = sessionFactory.getCurrentSession();
+    public List<Subscription> getAllAuthorBySubID(Integer subscriberId) {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        Session session = sessionFactory.getCurrentSession();
 
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-            Root<Subscription> root = criteria.from(Subscription.class);
-            Predicate predicate = builder.equal(root.get("status"), Stat.PENDING);
-            criteria.select(builder.count(root)).where(predicate);
-            TypedQuery<Long> query = session.createQuery(criteria);
+        session.beginTransaction();
 
-            long count = query.getSingleResult();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
+        Root<Subscription> root = criteria.from(Subscription.class);
 
-            return (int) Math.ceil((double) count / rows);
+        Predicate subscriberPredicate = builder.equal(root.get("subscriberID"), subscriberId);
+        Predicate statusPredicate = builder.equal(root.get("status"), Stat.ACCEPTED);
 
-        } catch (Exception e) {
-            return 0;
-        }
+        criteria.select(root).where(subscriberPredicate, statusPredicate);
+        TypedQuery<Subscription> query = session.createQuery(criteria);
+
+        List<Subscription> subscriptions = query.getResultList();
+
+        session.getTransaction().commit();
+
+        return subscriptions;
     }
 
     public Stat checkStatus(int creator_id, int subscriber_id) {

@@ -1,29 +1,21 @@
-version: '3'
+version: "3.9"
 services:
-  soapservice:
-    container_name: kino-jax-ws
+  soap-service-web:
     build: .
     ports:
-      - "8001:8001"
+      - 8000:8000
+    hostname: kinokuniya-soap-service
     env_file: .env
     volumes:
       - .:/usr/src/app
-    networks:
-      - soap-services
-  mysql:
-    container_name: db-soapservice
+    # depends_on:
+    #   - soap-service-db
+  soap-service-db:
     image: mysql:latest
     ports:
-      - "3307:3306"
+      - 3309:3309
     env_file: .env
-    hostname: db-soap-service
-    volumes:
-      - ./db:/var/lib/mysql
-    networks:
-      - soap-services
+    hostname: kinokuniya-soap-db
 volumes:
   db:
     driver: local
-networks:
-  soap-services:
-    driver: bridge 
