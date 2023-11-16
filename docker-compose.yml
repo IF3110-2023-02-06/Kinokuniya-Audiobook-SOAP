@@ -14,7 +14,7 @@ services:
     container_name: db-soapservice
     image: mysql:latest
     ports:
-      - "3307:3306"
+      - "3309:3309"
     env_file: .env
     hostname: db-soap-service
     volumes:
