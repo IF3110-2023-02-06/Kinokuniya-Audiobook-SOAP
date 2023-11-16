@@ -105,47 +105,61 @@ public class SubscriptionRepository {
         } 
     }
 
-    public List<Subscription> getAllReqSubscribe() {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-
-        session.beginTransaction();
-
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
-        Root<Subscription> root = criteria.from(Subscription.class);
-        Predicate predicate = builder.equal(root.get("status"), Stat.PENDING);
-        criteria.select(root).where(predicate);
-        TypedQuery<Subscription> query = session.createQuery(criteria);
-
-        List<Subscription> subscriptions = query.getResultList();
-
-        session.getTransaction().commit();
-
-        return subscriptions;
+    public DataSubs getAllReqSubscribe() {
+        try {
+            DataSubs data = new DataSubs();
+    
+            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+            Session session = sessionFactory.getCurrentSession();
+    
+            session.beginTransaction();
+    
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
+            Root<Subscription> root = criteria.from(Subscription.class);
+            Predicate predicate = builder.equal(root.get("status"), Stat.PENDING);
+            criteria.select(root).where(predicate);
+            TypedQuery<Subscription> query = session.createQuery(criteria);
+    
+            List<Subscription> subscriptions = query.getResultList();
+            data.setData(subscriptions);
+    
+            session.getTransaction().commit();
+    
+            return data;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public List<Subscription> getAllAuthorBySubID(Integer subscriberId) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-
-        session.beginTransaction();
-
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
-        Root<Subscription> root = criteria.from(Subscription.class);
-
-        Predicate subscriberPredicate = builder.equal(root.get("subscriberID"), subscriberId);
-        Predicate statusPredicate = builder.equal(root.get("status"), Stat.ACCEPTED);
-
-        criteria.select(root).where(subscriberPredicate, statusPredicate);
-        TypedQuery<Subscription> query = session.createQuery(criteria);
-
-        List<Subscription> subscriptions = query.getResultList();
-
-        session.getTransaction().commit();
-
-        return subscriptions;
+    public DataSubs getAllAuthorBySubID(Integer subscriberId) {
+        try {
+            DataSubs data = new DataSubs();
+    
+            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+            Session session = sessionFactory.getCurrentSession();
+    
+            session.beginTransaction();
+    
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
+            Root<Subscription> root = criteria.from(Subscription.class);
+    
+            Predicate subscriberPredicate = builder.equal(root.get("subscriberID"), subscriberId);
+            Predicate statusPredicate = builder.equal(root.get("status"), Stat.ACCEPTED);
+    
+            criteria.select(root).where(subscriberPredicate, statusPredicate);
+            TypedQuery<Subscription> query = session.createQuery(criteria);
+    
+            List<Subscription> subscriptions = query.getResultList();
+            data.setData(subscriptions);
+    
+            session.getTransaction().commit();
+    
+            return data;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Stat checkStatus(int creator_id, int subscriber_id) {

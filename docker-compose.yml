@@ -16,6 +16,8 @@ services:
       - 3309:3309
     env_file: .env
     hostname: kinokuniya-soap-db
+    volumes:
+      - ./db:/var/lib/mysql
 volumes:
   db:
     driver: local
