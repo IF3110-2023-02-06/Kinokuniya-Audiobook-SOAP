@@ -8,22 +8,15 @@ services:
     env_file: .env
     volumes:
       - .:/usr/src/app
-    networks:
-      - soap-services
-  mysql:
+  mysqlsoap:
     container_name: db-soapservice
     image: mysql:latest
     ports:
-      - "3309:3309"
+      - "3309:3306"
     env_file: .env
     hostname: db-soap-service
     volumes:
       - ./db:/var/lib/mysql
-    networks:
-      - soap-services
 volumes:
   db:
     driver: local
-networks:
-  soap-services:
-    driver: bridge 

@@ -4,6 +4,7 @@ package kinokuniya.service;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.jws.HandlerChain;
 
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -15,6 +16,7 @@ import kinokuniya.repository.SubscriptionRepository;
 
 @WebService
 @SOAPBinding(style = SOAPBinding.Style.DOCUMENT)
+@HandlerChain(file = "handler-chain.xml")
 public class SubscriptionService {
     private static final SubscriptionRepository SubscriptionRepository = new SubscriptionRepository();
 

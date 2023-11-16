@@ -5,7 +5,7 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 import kinokuniya.model.Logging;
 import kinokuniya.util.HibernateUtil;
 
-import com.sun.net.httpserver.HttpExchange;
+// import com.sun.net.httpserver.HttpExchange;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.w3c.dom.Node;
@@ -13,6 +13,8 @@ import org.w3c.dom.NodeList;
 
 import java.util.Date;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPBody;
 import javax.xml.soap.SOAPEnvelope;
@@ -25,7 +27,7 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 public class LoggerServlet implements SOAPHandler<SOAPMessageContext> {
     private void logToDatabase(SOAPMessageContext smc) throws SOAPException {
         boolean isResponse = (boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        HttpExchange httpExchange = (HttpExchange) smc.get(JAXWSProperties.HTTP_EXCHANGE);
+        HttpServletRequest httpExchange = (HttpServletRequest) smc.get(JAXWSProperties.HTTP_EXCHANGE);
 
         if (!isResponse) {
             SOAPPart soapPart = smc.getMessage().getSOAPPart();
@@ -42,8 +44,8 @@ public class LoggerServlet implements SOAPHandler<SOAPMessageContext> {
 
             Logging logging = new Logging();
             logging.setDescription(content);
-            logging.setEndpoint(httpExchange.getRequestURI().getPath());
-            logging.setIP(httpExchange.getRemoteAddress().getHostString());
+            logging.setEndpoint(httpExchange.getRequestURI());
+            logging.setIP(httpExchange.getRemoteHost());
             logging.setRequestedAt(new Date());
 
             SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
