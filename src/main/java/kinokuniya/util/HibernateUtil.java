@@ -23,7 +23,7 @@ public class HibernateUtil {
     private static SessionFactory buildSessionFactory() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-        properties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+        properties.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         properties.setProperty("hibernate.connection.url", HibernateUtil.DB_URL);
         properties.setProperty("hibernate.connection.username", HibernateUtil.DB_USER);
         properties.setProperty("hibernate.connection.password", HibernateUtil.DB_PASS);

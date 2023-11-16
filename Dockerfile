@@ -3,4 +3,4 @@ WORKDIR /app
 COPY . .
 EXPOSE 8001
 RUN mvn clean install
-ENTRYPOINT ["bash", "./scripts/init_server.sh"]
+CMD ["mvn", "tomcat7:run"]
