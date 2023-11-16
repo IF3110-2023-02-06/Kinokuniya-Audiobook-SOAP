@@ -1,4 +1,4 @@
-package soapserver.enums;
+package kinokuniya.enums;
 
 public enum Stat {
     PENDING,

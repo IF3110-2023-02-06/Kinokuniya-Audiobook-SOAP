@@ -1,18 +1,17 @@
-package soapserver.repositories;
-
-import soapserver.models.*;
-import soapserver.enums.Stat;
-import soapserver.utils.HibernateUtil;
+package kinokuniya.repository;
 
 import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Root;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-
+import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import kinokuniya.enums.Stat;
+import kinokuniya.model.*;
+import kinokuniya.util.HibernateUtil;
 
 public class SubscriptionRepository {
     public String createSubscribe(int creator_id, int subscriber_id, String creator_name, String subscriber_name) {

@@ -1,10 +1,11 @@
-package soapserver.models;
-
-import soapserver.enums.Stat;
+package kinokuniya.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import kinokuniya.enums.Stat;
+
 import java.io.Serializable;
 
 @Entity
@@ -27,7 +28,7 @@ public class Subscription implements Serializable {
     private Stat status = Stat.PENDING;
 
     public Subscription() {
-        
+        // Do nothing
     }
 
     public Subscription(int creatorID, int subscriberID) {
