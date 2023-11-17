@@ -8,7 +8,7 @@ This repository is intended to be a SOAP service for the Kinokuniya Audiobook We
 3. Go to the config repository and run the command `docker-compose up -d`
 
 ## Database
-![Database](./screenshots/soap-database.png)
+![Database](screenshots/soap-database.png)
 
 ## API Endpoints
 All endpoints are accessed through the `http://localhost:8001/api/subscribe` URL.
