@@ -2,7 +2,7 @@
 <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
   <handler-chain>
     <handler>
-      <handler-class>soapserver.handlers.LoggingHandler</handler-class>
+      <handler-class>kinokuniya.middleware.LoggerServlet</handler-class>
     </handler>
   </handler-chain>
 </handler-chains>

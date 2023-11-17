@@ -104,7 +104,7 @@ public class SubscriptionRepository {
         } 
     }
 
-    public DataSubs getAllReqSubscribe() {
+    public DataSubs getAllReqSubscribe(int creator_id) {
         try {
             DataSubs data = new DataSubs();
     
@@ -117,6 +117,7 @@ public class SubscriptionRepository {
             CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
             Root<Subscription> root = criteria.from(Subscription.class);
             Predicate predicate = builder.equal(root.get("status"), Stat.PENDING);
+            predicate = builder.and(predicate, builder.equal(root.get("creatorID"), creator_id));
             criteria.select(root).where(predicate);
             TypedQuery<Subscription> query = session.createQuery(criteria);
     
@@ -127,7 +128,7 @@ public class SubscriptionRepository {
     
             return data;
         } catch (Exception e) {
-            return null;
+            return new DataSubs();
         }
     }
 
@@ -157,7 +158,7 @@ public class SubscriptionRepository {
     
             return data;
         } catch (Exception e) {
-            return null;
+            return new DataSubs();
         }
     }
 
@@ -178,5 +179,35 @@ public class SubscriptionRepository {
         } catch (Exception e) {
             return Stat.NODATA;
         }
-    } 
+    }
+
+    public DataSubs getAllSubscribers(int creator_id) {
+        try {
+            DataSubs data = new DataSubs();
+    
+            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+            Session session = sessionFactory.getCurrentSession();
+    
+            session.beginTransaction();
+    
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Subscription> criteria = builder.createQuery(Subscription.class);
+            Root<Subscription> root = criteria.from(Subscription.class);
+    
+            Predicate creatorPredicate = builder.equal(root.get("creatorID"), creator_id);
+            Predicate statusPredicate = builder.equal(root.get("status"), Stat.ACCEPTED);
+    
+            criteria.select(root).where(creatorPredicate, statusPredicate);
+            TypedQuery<Subscription> query = session.createQuery(criteria);
+    
+            List<Subscription> subscriptions = query.getResultList();
+            data.setData(subscriptions);
+    
+            session.getTransaction().commit();
+    
+            return data;
+        } catch (Exception e) {
+            return new DataSubs();
+        }
+    }
 }
